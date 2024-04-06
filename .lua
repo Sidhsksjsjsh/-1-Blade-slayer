@@ -29,8 +29,7 @@ local var = {
     claim = false,
     ach = false,
     id = 0
-  },
-  
+  }
 }
 
 local function getChildren(path,funct)
