@@ -35,7 +35,8 @@ local var = {
     skill = true,
     guid = "null",
     id = 0,
-    ft = false
+    ft = false,
+    ft2 = false
   },
   forge = {
     guid = "null",
@@ -58,7 +59,7 @@ game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer(unpa
 ]]
 
 local function getChildren(path,funct)
-  for i,v in pair(path:GetChildren()) do
+  for i,v in pairs(path:GetChildren()) do
     funct(v)
   end
 end
@@ -194,9 +195,26 @@ T3:Toggle("Fast attack [ Hero ]",false,function(value)
         game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["isSkill"] = var.hero.skill,["heroGuid"] = var.hero.guid,["skillId"] = var.hero.id})
       else
         lib:notify(lib:ColorFonts("GUID is null, make ur hero attack one enemy","Red"),10)
+        var.hero.ft = false
       end
     end
 end)
+
+if player.self.Name == "Rivanda_Cheater" then
+T3:Toggle("Fast attack [ Hero ] [ Red dmg ] [ TEST ]",false,function(value)
+    var.hero.ft = value
+    var.hero.ft2 = value
+    while wait() do
+      if var.hero.ft == false then break end
+      if var.hero.guid ~= "null" then
+        game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["isSkill"] = var.hero.skill,["heroGuid"] = var.hero.guid,["skillId"] = var.hero.id})
+      else
+        lib:notify(lib:ColorFonts("GUID is null, make ur hero attack one enemy","Red"),10)
+        var.hero.ft = false
+      end
+    end
+end)
+end
 
 T4:Textbox("Insert weapon GUID",false,function(value)
     var.forge.guid = value
@@ -209,7 +227,8 @@ T4:Toggle("Auto forge weapon [ Anti failure ]",false,function(value)
       if var.forge.guid ~= "null" then
         game:GetService("ReplicatedStorage")["Remotes"]["ForgeWeapon"]:InvokeServer(var.forge.guid)
       else
-        lib:notify(lib:ColorFonts("pls inser weapon guid","Red"),10)
+        lib:notify(lib:ColorFonts("pls insert weapon guid","Red"),10)
+        var.forge.toggle = false
       end
     end
 end)
@@ -249,5 +268,11 @@ lib:HookFunction(function(method,self,args)
       var.hero.skill = args[1]["isSkill"]
       var.hero.guid = args[1]["heroGuid"]
       var.hero.id = args[1]["skillId"]
+    elseif method == "FireServer" and self == "HeroSkillHarm" and var.hero.ft2 == true then
+      if args[1]["harmIndex"] > var.hero.index then
+        var.hero.index = args[1]["harmIndex"]
+        var.hero.skill = args[1]["isSkill"]
+        var.hero.id = args[1]["skillId"]
+      end
     end
 end)
