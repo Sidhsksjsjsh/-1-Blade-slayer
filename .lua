@@ -39,7 +39,7 @@ local function getChildren(path,funct)
   end
 end
 
-T1:Toggle("Auto click",false,function(value)
+local clicker = T1:Toggle("Auto click",false,function(value)
     var.click = value
     while wait() do
       if var.click == false then break end
@@ -47,8 +47,12 @@ T1:Toggle("Auto click",false,function(value)
     end
 end)
 
-T1:Toggle("Auto attack nearest [ Turn on auto click ]",false,function(value)
+T1:Toggle("Auto attack nearest",false,function(value)
     var.atk = value
+    if clicker:GetValue() == false then
+      clicker:Set(true)
+    end
+    
     while wait() do
       if var.atk == false then break end
       getChildren(workspace["Enemys"],function(array)
