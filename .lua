@@ -2,8 +2,8 @@ local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sidhsksjs
 local wndw = lib:Window("VIP Turtle Hub V4")
 local T1 = wndw:Tab("Main",true)
 local T2 = wndw:Tab("Hatch",true)
-local T3 = wndw:Tab("Task")
-
+local T3 = wndw:Tab("Fight",true)
+local T4 = wndw:Tab("Forge",true)
 
 local workspace = game:GetService("Workspace")
 local player = {
@@ -29,8 +29,33 @@ local var = {
     claim = false,
     ach = false,
     id = 0
+  },
+  hero = {
+    index = 1,
+    skill = true,
+    guid = "null",
+    id = 0,
+    ft = false
+  },
+  forge = {
+    guid = "null",
+    toggle = false
   }
 }
+
+--[[
+local args = {
+    [1] = {
+        ["harmIndex"] = 2,
+        ["isSkill"] = true,
+        ["heroGuid"] = "8eea9d46-df8a-4cd5-8166-5b3cc52cd36f",
+        ["skillId"] = 200015
+    }
+}
+
+game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer(unpack(args))
+
+]]
 
 local function getChildren(path,funct)
   for i,v in pair(path:GetChildren()) do
@@ -38,27 +63,11 @@ local function getChildren(path,funct)
   end
 end
 
-local clicker = T1:Toggle("Auto click",false,function(value)
+T1:Toggle("Auto click",false,function(value)
     var.click = value
     while wait() do
       if var.click == false then break end
       game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer()
-    end
-end)
-
-T1:Toggle("Auto attack nearest",false,function(value)
-    var.atk = value
-    if clicker:GetValue() == false then
-      clicker:Set(true)
-    end
-    
-    while wait() do
-      if var.atk == false then break end
-      getChildren(workspace["Enemys"],function(array)
-          if (player.self.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude < 25 then
-            game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(v:GetAttribute("EnemyGuid"))
-          end
-      end)
     end
 end)
 
@@ -141,13 +150,92 @@ T2:Toggle("Auto best hero every 1s",false,function(value)
     end
 end)
 
-T3:Toggle("Receive task - TESTING",false,function(value)
+local client = {
+  near = true,
+  range = 25,
+  name = "null"
+}
+
+T3:Slider("kill range",0,500,25,function(value)
+    client.range = value
+end)
+
+T3:Textbox("Insert enemy name [ disable nearest system ]",false,function(value)
+    client.name = value
+end)
+
+T3:Toggle("Nearest system",true,function(value)
+    client.near = value
+end)
+
+T3:Toggle("Auto attack",false,function(value)
+    var.atk = value
+    while wait() do
+      if var.atk == false then break end
+      getChildren(workspace["Enemys"],function(array)
+          if client.near == true then
+            if (player.self.Character.HumanoidRootPart.Position - array.HumanoidRootPart.Position).Magnitude < client.range then
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+            end
+          else
+            if (string.sub(string.lower(array.Name),1,string.len(client.name))) == string.lower(client.name) then
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+            end
+          end
+      end)
+    end
+end)
+
+T3:Toggle("Fast attack [ Hero ]",false,function(value)
+    var.hero.ft = value
+    while wait() do
+      if var.hero.ft == false then break end
+      if var.hero.guid ~= "null" then
+        game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["isSkill"] = var.hero.skill,["heroGuid"] = var.hero.guid,["skillId"] = var.hero.id})
+      else
+        lib:notify(lib:ColorFonts("GUID is null, make ur hero attack one enemy","Red"),10)
+      end
+    end
+end)
+
+T4:Textbox("Insert weapon GUID",false,function(value)
+    var.forge.guid = value
+end)
+
+T4:Toggle("Auto forge weapon [ Anti failure ]",false,function(value)
+    var.forge.toggle = value
+    while wait() do
+      if var.forge.toggle == false then break end
+      if var.forge.guid ~= "null" then
+        game:GetService("ReplicatedStorage")["Remotes"]["ForgeWeapon"]:InvokeServer(var.forge.guid)
+      else
+        lib:notify(lib:ColorFonts("pls inser weapon guid","Red"),10)
+      end
+    end
+end)
+--[[T3:Toggle("Receive task - TESTING",false,function(value)
     var.task.ach = value
     while wait() do
       if var.task.ach == false then break end
       game:GetService("ReplicatedStorage")["Remotes"]["ReceiveTask"]:FireServer(var.task.id + 1)
     end
 end)
+(string.sub(string.lower(v.Name),1,string.len(value))) == string.lower(value)
+]]
+
+--[[
+local args = {
+    [1] = {
+        ["harmIndex"] = 2,
+        ["isSkill"] = true,
+        ["heroGuid"] = "8eea9d46-df8a-4cd5-8166-5b3cc52cd36f",
+        ["skillId"] = 200015
+    }
+}
+
+game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer(unpack(args))
+
+]]
 
 --game:GetService("ReplicatedStorage")["Remotes"]["FinishTask"]:FireServer(unpack(args))
 lib:HookFunction(function(method,self,args)
@@ -156,5 +244,10 @@ lib:HookFunction(function(method,self,args)
       var.egg.count = args[1]["count"]
     elseif method == "FireServer" and self == "FinishTask" then
       var.task.id = args[1]
+    elseif method == "FireServer" and self == "HeroSkillHarm" then
+      var.hero.index = args[1]["harmIndex"]
+      var.hero.skill = args[1]["isSkill"]
+      var.hero.guid = args[1]["heroGuid"]
+      var.hero.id = args[1]["skillId"]
     end
 end)
