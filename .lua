@@ -266,6 +266,48 @@ T99:Button("Remote spy",function()
       lib:RemoteSpy()
 end)
 
+T99:Button("Run LS Decompiler [ Vanguard ]",function()
+      lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
+end)
+
+T99:Button("Run LocalScript Leaker [ Vanguard ]",function()
+      lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
+end)
+
+T99:Button("Run Hidden remote execution [ Vanguard ]",function()
+      lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
+end)
+
+T99:Toggle("Open Vanguard system manager",false,function(value)
+      if value == true then
+        lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
+      end
+end)
+
+T99:Toggle("Open Turtle Panel",false,function(value)
+      if value == true then
+        lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
+      end
+end)
+
+T99:Toggle("Open AI panel",false,function(value)
+      if value == true then
+        lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
+      end
+end)
+
+T99:Toggle("Open LocalScript manager",false,function(value)
+      if value == true then
+        lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
+      end
+end)
+
+T99:Toggle("Sent a message when success",false,function(value)
+      if value == true then
+        lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
+      end
+end)
+  
 T99:Toggle("High damage [ Config ]",false,function(value)
       lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
 end)
