@@ -1,9 +1,10 @@
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sidhsksjsjsh/VAPE-UI-MODDED/main/.lua"))()
 local wndw = lib:Window("VIP Turtle Hub V4")
 local T1 = wndw:Tab("Main",true)
-local T2 = wndw:Tab("Hatch",true)
+local T2 = wndw:Tab("Hatch")
 local T3 = wndw:Tab("Fight",true)
-local T4 = wndw:Tab("Forge",true)
+local T4 = wndw:Tab("Forge")
+local T5 = wndw:Tab("Teleport")
 
 local workspace = game:GetService("Workspace")
 local player = {
@@ -41,7 +42,9 @@ local var = {
   forge = {
     guid = "null",
     toggle = false
-  }
+  },
+  mapid = 50001,
+  fuse = false
 }
 
 --[[
@@ -130,6 +133,14 @@ T1:Toggle("Auto ascendant",false,function(value)
     end
 end)
 
+T1:Toggle("Auto fuse weapon",false,function(value)
+    var.fuse = value
+    while wait() do
+      if var.fuse == false then break end
+      game:GetService("ReplicatedStorage")["Remotes"]["FuseWeapon"]:FireServer()
+    end
+end)
+
 T2:Toggle("Auto Hatch [ hatch first ]",false,function(value)
     var.egg.toggle = value
     while wait() do
@@ -161,7 +172,7 @@ T3:Slider("kill range",0,500,25,function(value)
     client.range = value
 end)
 
-T3:Textbox("Insert enemy name [ disable nearest system ]",false,function(value)
+T3:Textbox("Insert enemy name [ disable nearest ]",false,function(value)
     client.name = value
 end)
 
@@ -216,23 +227,37 @@ T3:Toggle("Fast attack [ Hero ] [ Red dmg ] [ TEST ]",false,function(value)
 end)
 end
 
-T4:Textbox("Insert weapon GUID",false,function(value)
+--[[T4:Textbox("Insert weapon GUID",false,function(value)
     var.forge.guid = value
 end)
+]]
 
 T4:Toggle("Auto forge weapon [ Anti failure ]",false,function(value)
     var.forge.toggle = value
+    lib:notify(lib:ColorFonts("Cant bypass.. ask the developer to fix this. [ Missing-LocalScript ]","Red"),30)
     while wait() do
       if var.forge.toggle == false then break end
       if var.forge.guid ~= "null" then
         game:GetService("ReplicatedStorage")["Remotes"]["ForgeWeapon"]:InvokeServer(var.forge.guid)
       else
-        lib:notify(lib:ColorFonts("pls insert weapon guid","Red"),10)
+        lib:notify(lib:ColorFonts("pls forge the weapon first to use this. [ Missing-GUID ]","Red"),10)
         var.forge.toggle = false
       end
     end
 end)
 --Id nya achmadrinaldi
+
+T5:Dropdown("Select map ID",{"50001","50002","50003","50004","50005","50006","50007","50008","50009","50010","50011","50012","50013","50014","50015"},function(value)
+    var.mapid = tonumber(value)
+end)
+
+T5:Button("Teleport to a selected map",function()
+    game:GetService("ReplicatedStorage")["Remotes"]["LocalPlayerTeleport"]:FireServer({["mapId"] = var.mapid})
+end)
+
+T5:Button("Join dungeon [ Bypass cooldown ]",function()
+    game:GetService("ReplicatedStorage")["Remotes"]["LocalPlayerTeleport"]:FireServer({["mapId"] = 50016})
+end)
 
 if player.self.Name == "achmadrinaldi" or player.self.Name == "Rivanda_Cheater" then
 local T99 = wndw:Tab("Access",true)
@@ -261,7 +286,7 @@ T99:Toggle("Infinite equips",false,function(value)
       lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
 end)
 
-T99:Toggle("Auto modded LocalScript [ with Vanguard API ]",false,function(value)
+T99:Toggle("Auto modded LocalScript with Vanguard API",false,function(value)
       lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
 end)
 
@@ -316,5 +341,7 @@ lib:HookFunction(function(method,self,args)
         var.hero.skill = args[1]["isSkill"]
         var.hero.id = args[1]["skillId"]
       end
+    elseif method == "InvokeServer" and self == "ForgeWeapon" then
+      var.forge.guid = args[1]
     end
 end)
