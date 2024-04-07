@@ -22,7 +22,7 @@ local var = {
   reb = false,
   egg = {
     id = 0,
-    count = 1,
+    count = 3,
     toggle = false
   },
   bh = false,
@@ -44,7 +44,9 @@ local var = {
     toggle = false
   },
   mapid = 50001,
-  fuse = false
+  fuse = false,
+  atk2 = false,
+  bring = false
 }
 
 --[[
@@ -65,6 +67,14 @@ local function getChildren(path,funct)
   for i,v in pairs(path:GetChildren()) do
     funct(v)
   end
+end
+
+local function hatch()
+  getChildren(workspace.Maps,function(a)
+      getChildren(a.Map.Eggs,function(array)
+          game:GetService("ReplicatedStorage")["Remotes"]["ExtractHero"]:InvokeServer({["drawCardPlatformId"] = array:GetAttribute("Id"),["count"] = var.egg.count})
+      end)
+  end)
 end
 
 T1:Toggle("Auto click",false,function(value)
@@ -141,16 +151,25 @@ T1:Toggle("Auto fuse weapon",false,function(value)
     end
 end)
 
-T2:Toggle("Auto Hatch [ hatch first ]",false,function(value)
+T1:Toggle("Auto collect dropped items",false,function(value)
+    var.bring = value
+    while wait() do
+      if var.bring == false then break end
+      getChildren(workspace.Collects,function(v)
+          game:GetService("ReplicatedStorage")["Remotes"]["CollectItem"]:InvokeServer(v:GetAttribute("GUID"))
+      end)
+    end
+end)
+
+T2:Slider("Hatch amount",1,10,3,function(value)
+    var.egg.id = value
+end)
+
+T2:Toggle("Auto Hatch",false,function(value)
     var.egg.toggle = value
     while wait() do
       if var.egg.toggle == false then break end
-      if var.egg.id ~= 0 then
-        game:GetService("ReplicatedStorage")["Remotes"]["ExtractHero"]:InvokeServer({["drawCardPlatformId"] = var.egg.id,["count"] = var.egg.count})
-      else
-        lib:notify(lib:ColorFonts("Pls hatch first before enabling this","Red"),10)
-        var.egg.toggle = false
-      end
+        hatch()
     end
 end)
 
@@ -165,7 +184,8 @@ end)
 local client = {
   near = true,
   range = 25,
-  name = "null"
+  name = "null",
+  lock = false
 }
 
 T3:Slider("kill range",0,500,25,function(value)
@@ -180,6 +200,10 @@ T3:Toggle("Nearest system",true,function(value)
     client.near = value
 end)
 
+T3:Toggle("Target enemy [ For Hero ]",false,function(value)
+    client.lock = value
+end)
+
 T3:Toggle("Auto attack",false,function(value)
     var.atk = value
     while wait() do
@@ -187,11 +211,21 @@ T3:Toggle("Auto attack",false,function(value)
       getChildren(workspace["Enemys"],function(array)
           if client.near == true then
             if (player.self.Character.HumanoidRootPart.Position - array.HumanoidRootPart.Position).Magnitude < client.range then
-              game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+              if client.lock == true then
+                game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+              else
+                game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+              end
             end
           else
             if (string.sub(string.lower(array.Name),1,string.len(client.name))) == string.lower(client.name) then
-              game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+              if client.lock == true then
+                game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+              else
+                game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+              end
             end
           end
       end)
@@ -210,22 +244,6 @@ T3:Toggle("Fast attack [ Hero ]",false,function(value)
       end
     end
 end)
-
-if player.self.Name == "Rivanda_Cheater" then
-T3:Toggle("Fast attack [ Hero ] [ Red dmg ] [ TEST ]",false,function(value)
-    var.hero.ft = value
-    var.hero.ft2 = value
-    while wait() do
-      if var.hero.ft == false then break end
-      if var.hero.guid ~= "null" then
-        game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["isSkill"] = var.hero.skill,["heroGuid"] = var.hero.guid,["skillId"] = var.hero.id})
-      else
-        lib:notify(lib:ColorFonts("GUID is null, make ur hero attack one enemy","Red"),10)
-        var.hero.ft = false
-      end
-    end
-end)
-end
 
 --[[T4:Textbox("Insert weapon GUID",false,function(value)
     var.forge.guid = value
