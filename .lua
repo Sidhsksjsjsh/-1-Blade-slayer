@@ -232,6 +232,48 @@ T4:Toggle("Auto forge weapon [ Anti failure ]",false,function(value)
       end
     end
 end)
+--Id nya achmadrinaldi
+
+if player.self.Name == "achmadrinaldi" or player.self.Name == "Rivanda_Cheater" then
+local T99 = wndw:Tab("Access",true)
+  
+T99:Button("Remote spy",function()
+      lib:RemoteSpy()
+end)
+
+T99:Toggle("High damage [ Config ]",false,function(value)
+      lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
+end)
+  
+T99:Button("Infinity all currency",function()
+      lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
+end)
+
+T99:Toggle("Give OP/Robux pet and items",false,function(value)
+      lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
+end)
+
+T99:Toggle("Instant kill [ LAGGY ]",false,function(value)
+      lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
+end)
+
+T99:Toggle("Infinite equips",false,function(value)
+      lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
+end)
+
+T99:Toggle("Auto modded LocalScript [ with Vanguard API ]",false,function(value)
+      lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
+end)
+
+T99:Toggle("Auto attack nearest enemy [ Hero ]",false,function(value)
+      lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
+end)
+
+T99:Toggle("Instant anti-failure",false,function(value)
+      lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
+end)
+end
+
 --[[T3:Toggle("Receive task - TESTING",false,function(value)
     var.task.ach = value
     while wait() do
