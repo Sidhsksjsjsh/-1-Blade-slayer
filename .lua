@@ -56,7 +56,8 @@ local var = {
     mapid = 0,
     toggle = false,
     dtable = {"1","2","3","4"}
-  }
+  },
+  dc = false
 }
 
 --[[
@@ -253,8 +254,10 @@ T3:Toggle("Auto attack",false,function(value)
               if client.lock == true then
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
                 game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
               else
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
               end
             end
           else
@@ -262,8 +265,10 @@ T3:Toggle("Auto attack",false,function(value)
               if client.lock == true then
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
                 game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
               else
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
               end
             end
           end
@@ -277,6 +282,7 @@ T3:Toggle("Fast attack [ Hero ]",false,function(value)
       if var.hero.ft == false then break end
       if var.hero.guid ~= "null" then
         game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["isSkill"] = var.hero.skill,["heroGuid"] = var.hero.guid,["skillId"] = var.hero.id})
+        game:GetService("ReplicatedStorage")["Remotes"]["RespirationSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["skillId"] = var.hero.id})
       else
         lib:notify(lib:ColorFonts("GUID is null, make ur hero attack one enemy","Red"),10)
         var.hero.ft = false
@@ -292,8 +298,10 @@ T3:Toggle("Auto attack all rendered enemies",false,function(value)
           if client.lock == true then
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
               game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
           else
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
           end
       end)
     end
@@ -327,6 +335,18 @@ end)
 
 T5:Button("Join dungeon [ Bypass cooldown ]",function()
     game:GetService("ReplicatedStorage")["Remotes"]["LocalPlayerTeleport"]:FireServer({["mapId"] = 50016})
+end)
+
+T5:Toggle("Auto open daily chest [ in selected map ]",false,function(value)
+    var.dc = value
+    while wait() do
+      if var.dc == false then break end
+      getChildren(workspace["Maps"],function(i)
+          getChildren(i["Map"]["Box"],function(get)
+              game:GetService("ReplicatedStorage")["Remotes"]["GetBoxGift"]:FireServer({["mapId"] = var.mapid,["pointId"] = get.Name})
+          end)
+      end)
+    end
 end)
 
 if player.self.Name == "achmadrinaldi" or player.self.Name == "Rivanda_Cheater" then
@@ -408,8 +428,27 @@ end)
 
 T99:Toggle("Instant anti-failure",false,function(value)
       lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
-end)]]
-  
+end)
+lib:CheckServers(3,function(vuln)
+  if vuln == true then
+  lib:Serverhop(3)
+end
+end)
+lib:rejoin() 
+  ]]
+T99:Button("Teleport to lower server",function()
+      lib:CheckServers(4,function(vuln)
+          if vuln == true then
+            lib:Serverhop(4)
+          else
+            lib:notify(lib:ColorFonts("Failed to teleport. #ERROR_OCCURED","Red"),10)
+          end
+      end)
+end)
+
+T99:Button("Rejoin",function()
+      lib:rejoin()
+end)
 end
 
 --[[T3:Toggle("Receive task - TESTING",false,function(value)
@@ -433,6 +472,12 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer(unpack(args))
+
+local args = {
+    [1] = "6cd1497a-299a-455f-a250-aace178fcef5"
+}
+
+game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(unpack(args))
 
 ]]
 
