@@ -5,6 +5,7 @@ local T2 = wndw:Tab("Hatch")
 local T3 = wndw:Tab("Fight",true)
 local T4 = wndw:Tab("Forge")
 local T5 = wndw:Tab("Teleport")
+local T6 = wndw:Tab("Raid",true)
 
 local workspace = game:GetService("Workspace")
 local player = {
@@ -46,7 +47,16 @@ local var = {
   mapid = 50001,
   fuse = false,
   atk2 = false,
-  bring = false
+  bring = false,
+  atk3 = false,
+  raid = {
+    table = {"Room1","Room2","Room3","Room4"},
+    s = "Room1",
+    diff = 1,
+    mapid = 0,
+    toggle = false,
+    dtable = {"1","2","3","4"}
+  }
 }
 
 --[[
@@ -77,6 +87,27 @@ local function hatch()
   end)
 end
 
+T6:Dropdown("Select Room",var.raid.table,function(value)
+    var.raid.s = value
+end)
+
+T6:Dropdown("Select difficulty",var.raid.dtable,function(value)
+    var.raid.diff = tonumber(value)
+end)
+
+T6:Textbox("Insert map ID",false,function(value)
+    var.raid.mapid = tonumber(value)
+end)
+
+T6:Button("Start raid",function()
+    lib:notify(lib:ColorFonts("Dont move, auto kill is enabled. u will lose all reward if u move","Green"),10)
+    game:GetService("ReplicatedStorage")["Remotes"]["EnterRaidRoom"]:FireServer(var.raid.s)
+    wait(0.1)
+    game:GetService("ReplicatedStorage")["Remotes"]["SelectRaidsDifficulty"]:FireServer({["difficulty"] = var.raid.diff,["roomName"] = var.raid.s,["selectMapId"] = var.raid.mapid})
+    wait(0.1)
+    game:GetService("ReplicatedStorage")["Remotes"]["StartChallengeRaidMap"]:InvokeServer({["userIds"] = {player.self.UserId},["roomName"] = var.raid.s})
+end)
+
 T1:Toggle("Auto click",false,function(value)
     var.click = value
     while wait() do
@@ -106,6 +137,10 @@ end)
 
 T1:Toggle("Auto equip best weapon every 1s",false,function(value)
     var.bw = value
+    if value == true then
+      game:GetService("ReplicatedStorage")["Remotes"]["EquipBestWeapon"]:FireServer()
+    end
+    
     while wait(1) do
       if var.bw == false then break end
       game:GetService("ReplicatedStorage")["Remotes"]["EquipBestWeapon"]:FireServer()
@@ -173,8 +208,12 @@ T2:Toggle("Auto Hatch",false,function(value)
     end
 end)
 
-T2:Toggle("Auto best hero every 1s",false,function(value)
+T2:Toggle("Auto equip best hero every 1s",false,function(value)
     var.bh = value
+    if value == true then
+      game:GetService("ReplicatedStorage")["Remotes"]["AutoEquipBestHero"]:FireServer()
+    end
+    
     while wait(1) do
       if var.bh == false then break end
       game:GetService("ReplicatedStorage")["Remotes"]["AutoEquipBestHero"]:FireServer()
@@ -245,6 +284,20 @@ T3:Toggle("Fast attack [ Hero ]",false,function(value)
     end
 end)
 
+T3:Toggle("Auto attack all rendered enemies",false,function(value)
+    var.atk = value
+    while wait() do
+      if var.atk == false then break end
+      getChildren(workspace["Enemys"],function(array)
+          if client.lock == true then
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+          else
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
+          end
+      end)
+    end
+end)
 --[[T4:Textbox("Insert weapon GUID",false,function(value)
     var.forge.guid = value
 end)
@@ -252,7 +305,6 @@ end)
 
 T4:Toggle("Auto forge weapon [ Anti failure ]",false,function(value)
     var.forge.toggle = value
-    lib:notify(lib:ColorFonts("Cant bypass.. ask the developer to fix this. [ Missing-LocalScript ]","Red"),30)
     while wait() do
       if var.forge.toggle == false then break end
       if var.forge.guid ~= "null" then
@@ -284,7 +336,7 @@ T99:Button("Remote spy",function()
       lib:RemoteSpy()
 end)
 
-T99:Button("Run LS Decompiler [ Vanguard ]",function()
+--[[T99:Button("Run LS Decompiler [ Vanguard ]",function()
       lib:notify(lib:ColorFonts("You're not developer or staff.","Red"),30)
 end)
 
@@ -356,7 +408,8 @@ end)
 
 T99:Toggle("Instant anti-failure",false,function(value)
       lib:notify(lib:ColorFonts('{"title":"Authorized failed","desc":"Ur ID and Username does not match..."}',"Red"),30)
-end)
+end)]]
+  
 end
 
 --[[T3:Toggle("Receive task - TESTING",false,function(value)
