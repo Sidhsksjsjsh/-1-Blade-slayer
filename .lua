@@ -285,9 +285,9 @@ T3:Toggle("Fast attack [ Hero ]",false,function(value)
 end)
 
 T3:Toggle("Auto attack all rendered enemies",false,function(value)
-    var.atk = value
+    var.atk3 = value
     while wait() do
-      if var.atk == false then break end
+      if var.atk3 == false then break end
       getChildren(workspace["Enemys"],function(array)
           if client.lock == true then
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
