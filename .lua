@@ -57,7 +57,8 @@ local var = {
     toggle = false,
     dtable = {"1","2","3","4"}
   },
-  dc = false
+  dc = false,
+  forraid = false
 }
 
 --[[
@@ -88,6 +89,31 @@ local function hatch()
   end)
 end
 
+local function raidEvents()
+  var.forraid = true
+  lib:runtime(function()
+      if var.forraid == false then break end
+      if #workspace["Enemys"]:GetChildren() < 1 then
+        lib:notify(lib:ColorFonts("Raid has cleared, no enemy remaining. teleporting u to the raid lobby","Green"),10)
+        if workspace:FindFirstChild("EnchantChest") then
+          firetouchinterest(workspace.EnchantChest.Part,player.self.Character.HumanoidRootPart,0)
+          wait(0.5)
+          firetouchinterest(workspace.EnchantChest.Part,player.self.Character.HumanoidRootPart,1)
+          game:GetService("ReplicatedStorage")["Remotes"]["QuitRaidsMap"]:InvokeServer({["currentSlotIndex"] = 1,["toMapId"] = 50201})
+          var.forraid = false
+        else
+          lib:notify(lib:ColorFonts("Chest not found, cant claim chest.","Red"),10)
+          var.forraid = false
+          game:GetService("ReplicatedStorage")["Remotes"]["QuitRaidsMap"]:InvokeServer({["currentSlotIndex"] = 1,["toMapId"] = 50201})
+        end
+      else
+        getChildren(workspace["Enemys"],function(get)
+            game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(get:GetAttribute("EnemyGuid"))
+        end)
+      end
+  end)
+end
+
 T6:Dropdown("Select Room",var.raid.table,function(value)
     var.raid.s = value
 end)
@@ -100,6 +126,10 @@ T6:Textbox("Insert map ID",false,function(value)
     var.raid.mapid = tonumber(value)
 end)
 
+T6:Button("Raid lobby",function()
+    game:GetService("ReplicatedStorage")["Remotes"]["LocalPlayerTeleport"]:FireServer({["mapId"] = 50201})
+end)
+
 T6:Button("Start raid",function()
     lib:notify(lib:ColorFonts("Dont move, auto kill is enabled. u will lose all reward if u move","Green"),10)
     game:GetService("ReplicatedStorage")["Remotes"]["EnterRaidRoom"]:FireServer(var.raid.s)
@@ -107,6 +137,8 @@ T6:Button("Start raid",function()
     game:GetService("ReplicatedStorage")["Remotes"]["SelectRaidsDifficulty"]:FireServer({["difficulty"] = var.raid.diff,["roomName"] = var.raid.s,["selectMapId"] = var.raid.mapid})
     wait(0.1)
     game:GetService("ReplicatedStorage")["Remotes"]["StartChallengeRaidMap"]:InvokeServer({["userIds"] = {player.self.UserId},["roomName"] = var.raid.s})
+    wait(0.1)
+    raidEvents()
 end)
 
 T1:Toggle("Auto click",false,function(value)
