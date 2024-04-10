@@ -152,7 +152,7 @@ T6:Toggle("Start raid + Auto kill",false,function(value)
       wait(0.1)
       game:GetService("ReplicatedStorage")["Remotes"]["StartChallengeRaidMap"]:InvokeServer({["userIds"] = {player.self.UserId},["roomName"] = var.raid.s})
     end
-    
+    wait(0.5)
     while wait() do
       if var.fraid == false then break end
       if #workspace["Enemys"]:GetChildren() < 1 then
