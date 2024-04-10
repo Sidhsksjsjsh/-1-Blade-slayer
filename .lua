@@ -58,7 +58,7 @@ local var = {
     dtable = {"1","2","3","4"}
   },
   dc = false,
-  forraid = false
+  fraid = false
 }
 
 --[[
@@ -89,10 +89,10 @@ local function hatch()
   end)
 end
 
-local function raidEvents()
-  var.forraid = true
+--[[local function raidEvents()
+  var.fraid = true
   lib:runtime(function()
-      if var.forraid == false then break end
+      if var.fraid == false then break end
       if #workspace["Enemys"]:GetChildren() < 1 then
         lib:notify(lib:ColorFonts("Raid has cleared, no enemy remaining. teleporting u to the raid lobby","Green"),10)
         if workspace:FindFirstChild("EnchantChest") then
@@ -100,19 +100,19 @@ local function raidEvents()
           wait(0.5)
           firetouchinterest(workspace.EnchantChest.Part,player.self.Character.HumanoidRootPart,1)
           game:GetService("ReplicatedStorage")["Remotes"]["QuitRaidsMap"]:InvokeServer({["currentSlotIndex"] = 1,["toMapId"] = 50201})
-          var.forraid = false
+          var.fraid = false
         else
           lib:notify(lib:ColorFonts("Chest not found, cant claim chest.","Red"),10)
-          var.forraid = false
+          var.fraid = false
           game:GetService("ReplicatedStorage")["Remotes"]["QuitRaidsMap"]:InvokeServer({["currentSlotIndex"] = 1,["toMapId"] = 50201})
-        end
+        end --√
       else
         getChildren(workspace["Enemys"],function(get)
             game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(get:GetAttribute("EnemyGuid"))
         end)
       end
   end)
-end
+end]]
 
 T6:Dropdown("Select Room",var.raid.table,function(value)
     var.raid.s = value
@@ -130,7 +130,7 @@ T6:Button("Raid lobby",function()
     game:GetService("ReplicatedStorage")["Remotes"]["LocalPlayerTeleport"]:FireServer({["mapId"] = 50201})
 end)
 
-T6:Button("Start raid",function()
+--[[T6:Button("Start raid",function()
     lib:notify(lib:ColorFonts("Dont move, auto kill is enabled. u will lose all reward if u move","Green"),10)
     game:GetService("ReplicatedStorage")["Remotes"]["EnterRaidRoom"]:FireServer(var.raid.s)
     wait(0.1)
@@ -139,6 +139,48 @@ T6:Button("Start raid",function()
     game:GetService("ReplicatedStorage")["Remotes"]["StartChallengeRaidMap"]:InvokeServer({["userIds"] = {player.self.UserId},["roomName"] = var.raid.s})
     wait(0.1)
     raidEvents()
+end)
+]]
+
+T6:Toggle("Start raid + Auto kill",false,function(value)
+    var.fraid = value
+    if value == true then
+      lib:notify(lib:ColorFonts("Dont move, auto kill is enabled. u will lose all reward if u move","Green"),10)
+      game:GetService("ReplicatedStorage")["Remotes"]["EnterRaidRoom"]:FireServer(var.raid.s)
+      wait(0.1)
+      game:GetService("ReplicatedStorage")["Remotes"]["SelectRaidsDifficulty"]:FireServer({["difficulty"] = var.raid.diff,["roomName"] = var.raid.s,["selectMapId"] = var.raid.mapid})
+      wait(0.1)
+      game:GetService("ReplicatedStorage")["Remotes"]["StartChallengeRaidMap"]:InvokeServer({["userIds"] = {player.self.UserId},["roomName"] = var.raid.s})
+    end
+    
+    while wait() do
+      if var.fraid == false then break end
+      if #workspace["Enemys"]:GetChildren() < 1 then
+        if workspace:FindFirstChild("EnchantChest") then
+          firetouchinterest(workspace.EnchantChest.Part,player.self.Character.HumanoidRootPart,0)
+          wait(0.1)
+          firetouchinterest(workspace.EnchantChest.Part,player.self.Character.HumanoidRootPart,1)
+          game:GetService("ReplicatedStorage")["Remotes"]["QuitRaidsMap"]:InvokeServer({["currentSlotIndex"] = 1,["toMapId"] = 50201})
+          var.fraid = false
+        else
+          lib:notify(lib:ColorFonts("No chest are detected","Red"),10)
+          var.fraid = false
+        end
+      else
+        getChildren(workspace["Enemys"],function(get)
+            if var.hero.guid ~= "null" then
+              game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(get:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["isSkill"] = var.hero.skill,["heroGuid"] = var.hero.guid,["skillId"] = var.hero.id})
+              game:GetService("ReplicatedStorage")["Remotes"]["RespirationSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["skillId"] = var.hero.id})
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(get:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(get:GetAttribute("EnemyGuid"))
+            else
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(get:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(get:GetAttribute("EnemyGuid"))
+            end
+        end)
+      end --√
+    end
 end)
 
 T1:Toggle("Auto click",false,function(value)
