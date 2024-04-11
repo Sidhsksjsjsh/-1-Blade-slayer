@@ -6,6 +6,7 @@ local T3 = wndw:Tab("Fight",true)
 local T4 = wndw:Tab("Forge")
 local T5 = wndw:Tab("Teleport")
 local T6 = wndw:Tab("Raid",true)
+local T7 = wndw:Tab("Machine",true)
 
 local workspace = game:GetService("Workspace")
 local player = {
@@ -58,7 +59,13 @@ local var = {
     dtable = {"1","2","3","4"}
   },
   dc = false,
-  fraid = false
+  fraid = false,
+  cgroup = false,
+  machine = {
+    table = {"Mask","Breath","Ornament"},
+    s = "Mask",
+    toggle = false
+  }
 }
 
 --[[
@@ -72,7 +79,7 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer(unpack(args))
-
+lib:CustomTeleport("tween",str,"position")
 ]]
 
 local function getChildren(path,funct)
@@ -113,6 +120,26 @@ end
       end
   end)
 end]]
+
+T7:Dropdown("Select machine",var.machine.table,function(value)
+    var.machine.s = value
+end)
+
+T7:Toggle("Auto draw machine",false,function(value)
+    var.machine.toggle = value
+    while wait() do
+      if var.machine.toggle == false then break end
+      if var.machine.s == "Mask" then
+        game:GetService("ReplicatedStorage")["Remotes"]["RerollOrnament"]:InvokeServer(400001)
+      elseif var.machine.s == "Breath" then
+        game:GetService("ReplicatedStorage")["Remotes"]["RerollOrnament"]:InvokeServer(400002)
+      elseif var.machine.s == "Ornament" then
+        game:GetService("ReplicatedStorage")["Remotes"]["RerollOrnament"]:InvokeServer(400003)
+      else
+        lib:notify(lib:ColorFonts("INVALID MACHINE NAME","Red"),10)
+      end
+    end
+end)
 
 T6:Dropdown("Select Room",var.raid.table,function(value)
     var.raid.s = value
@@ -187,6 +214,8 @@ T1:Toggle("Auto click",false,function(value)
     var.click = value
     while wait() do
       if var.click == false then break end
+      game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer()
+      game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer()
       game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer()
     end
 end)
@@ -266,8 +295,17 @@ T1:Toggle("Auto collect dropped items",false,function(value)
     while wait() do
       if var.bring == false then break end
       getChildren(workspace.Collects,function(v)
-          game:GetService("ReplicatedStorage")["Remotes"]["CollectItem"]:InvokeServer(v:GetAttribute("GUID"))
+          --game:GetService("ReplicatedStorage")["Remotes"]["CollectItem"]:InvokeServer(v:GetAttribute("GUID"))
+          lib:CustomTeleport("tween",v,"position")
       end)
+    end
+end)
+
+T1:Toggle("Auto claim group chest",false,function(value)
+    var.cgroup = value
+    while wait() do
+      if var.cgroup == false then break end
+      game:GetService("ReplicatedStorage")["Remotes"]["ClaimGroupReward"]:InvokeServer()
     end
 end)
 
