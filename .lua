@@ -190,7 +190,7 @@ T6:Toggle("Start raid + Auto kill",false,function(value)
           game:GetService("ReplicatedStorage")["Remotes"]["QuitRaidsMap"]:InvokeServer({["currentSlotIndex"] = 1,["toMapId"] = 50201})
           var.fraid = false
         else
-          lib:notify(lib:ColorFonts("No chest are detected","Red"),10)
+          lib:notify(lib:ColorFonts("Pls join raid. #Failed","Red"),10)
           var.fraid = false
         end
       else
@@ -201,9 +201,11 @@ T6:Toggle("Start raid + Auto kill",false,function(value)
               game:GetService("ReplicatedStorage")["Remotes"]["RespirationSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["skillId"] = var.hero.id})
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(get:GetAttribute("EnemyGuid"))
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(get:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = get:GetAttribute("EnemyGuid")})
             else
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(get:GetAttribute("EnemyGuid"))
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(get:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = get:GetAttribute("EnemyGuid")})
             end
         end)
       end --√
@@ -367,9 +369,11 @@ T3:Toggle("Auto attack",false,function(value)
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
                 game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = array:GetAttribute("EnemyGuid")})
               else
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = array:GetAttribute("EnemyGuid")})
               end
             end
           else
@@ -378,9 +382,11 @@ T3:Toggle("Auto attack",false,function(value)
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
                 game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = array:GetAttribute("EnemyGuid")})
               else
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
                 game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+                game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = array:GetAttribute("EnemyGuid")})
               end
             end
           end
@@ -395,6 +401,7 @@ T3:Toggle("Fast attack [ Hero ]",false,function(value)
       if var.hero.guid ~= "null" then
         game:GetService("ReplicatedStorage")["Remotes"]["HeroSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["isSkill"] = var.hero.skill,["heroGuid"] = var.hero.guid,["skillId"] = var.hero.id})
         game:GetService("ReplicatedStorage")["Remotes"]["RespirationSkillHarm"]:FireServer({["harmIndex"] = var.hero.index,["skillId"] = var.hero.id})
+        game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = array:GetAttribute("EnemyGuid")})
       else
         lib:notify(lib:ColorFonts("GUID is null, make ur hero attack one enemy","Red"),10)
         var.hero.ft = false
@@ -411,9 +418,11 @@ T3:Toggle("Auto attack all rendered enemies",false,function(value)
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
               game:GetService("ReplicatedStorage")["Remotes"]["ClickEnemy"]:InvokeServer(array:GetAttribute("EnemyGuid"))
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = array:GetAttribute("EnemyGuid")})
           else
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerClickAttack"]:FireServer(array:GetAttribute("EnemyGuid"))
               game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(array:GetAttribute("EnemyGuid"))
+              game:GetService("ReplicatedStorage")["Remotes"]["HeroUseSkill"]:FireServer({["heroGuid"] = var.hero.guid,["attackType"] = var.hero.index,["userId"] = player.self.UserId,["enemyGuid"] = array:GetAttribute("EnemyGuid")})
           end
       end)
     end
