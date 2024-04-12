@@ -439,7 +439,7 @@ T4:Toggle("Auto forge weapon [ Anti failure ]",false,function(value)
       if var.forge.guid ~= "null" then
         game:GetService("ReplicatedStorage")["Remotes"]["ForgeWeapon"]:InvokeServer(var.forge.guid)
       else
-        lib:notify(lib:ColorFonts("pls forge the weapon first to use this. [ Missing-GUID ]","Red"),10)
+        lib:notify(lib:ColorFonts("pls equip the weapon first. [ Missing-GUID ]","Red"),10)
         var.forge.toggle = false
       end
     end
@@ -599,6 +599,11 @@ local args = {
 }
 
 game:GetService("ReplicatedStorage")["Remotes"]["PlayerRespirationSkillAttack"]:InvokeServer(unpack(args))
+local args = {
+    [1] = "72b7f289-8d06-45f5-a439-bd0b65f703b0"
+}
+
+game:GetService("ReplicatedStorage")["Remotes"]["EquipWeapon"]:FireServer(unpack(args))
 
 ]]
 
@@ -620,7 +625,7 @@ lib:HookFunction(function(method,self,args)
         var.hero.skill = args[1]["isSkill"]
         var.hero.id = args[1]["skillId"]
       end
-    elseif method == "InvokeServer" and self == "ForgeWeapon" then
+    elseif method == "FireServer" and self == "EquipWeapon" then
       var.forge.guid = args[1]
     end
 end)
