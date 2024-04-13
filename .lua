@@ -132,6 +132,26 @@ T7:Dropdown("Select machine",var.machine.table,function(value)
     var.machine.s = value
 end)
 
+T7:Toggle("Keep common",false,function(value)
+    var.machine.delete.common = value
+end)
+
+T7:Toggle("Keep rare",false,function(value)
+    var.machine.delete.rare = value
+end)
+
+T7:Toggle("Keep epic",false,function(value)
+    var.machine.delete.epic = value
+end)
+
+T7:Toggle("Keep legendary",false,function(value)
+    var.machine.delete.legendary = value
+end)
+
+T7:Toggle("Keep mythical",false,function(value)
+    var.machine.delete.mythic = value
+end)
+
 T7:Toggle("Auto draw machine",false,function(value)
     var.machine.toggle = value
     while wait() do
@@ -150,12 +170,63 @@ T7:Toggle("Auto draw machine",false,function(value)
     end
 end)
 
---[[lib:runtime(function()
+lib:runtime(function()
+    if var.machine.toggle == true then
     if var.machine.s == "Mask" then
-        k
+      if player.self.Character:FindFirstChild("Mask1") and var.machine.delete.common == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Common","G2") .. " mask!",30)
+      elseif player.self.Character:FindFirstChild("Mask2") and var.machine.delete.rare == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Rare","Sky Blue") .. " mask!",30)
+      elseif player.self.Character:FindFirstChild("Mask3") and var.machine.delete.epic == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Epic","Purple") .. " mask!",30)
+      elseif player.self.Character:FindFirstChild("Mask4") and var.machine.delete.legendary == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Legendary","Yellow") .. " mask!",30)
+      elseif player.self.Character:FindFirstChild("Mask5") and var.machine.delete.mythic == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Mythical","Red") .. " mask!",30)
+      end
+    elseif var.machine.s == "Breath" then
+      if player.self.Character:FindFirstChild("Stripe1") and var.machine.delete.common == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Common","G2") .. " breath!",30)
+      elseif player.self.Character:FindFirstChild("Stripe2") and var.machine.delete.rare == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Rare","Sky Blue") .. " breath!",30)
+      elseif player.self.Character:FindFirstChild("Stripe3") and var.machine.delete.epic == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Epic","Purple") .. " breath!",30)
+      elseif player.self.Character:FindFirstChild("Stripe4") and var.machine.delete.legendary == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Legendary","Yellow") .. " breath!",30)
+      elseif player.self.Character:FindFirstChild("Stripe5") and var.machine.delete.mythic == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Mythical","Red") .. " breath!",30)
+      end
+    elseif var.machine.s == "Ornament" then
+      if player.self.Character:FindFirstChild("Back1") and var.machine.delete.common == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Common","G2") .. " ornament!",30)
+      elseif player.self.Character:FindFirstChild("Back2") and var.machine.delete.rare == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Rare","Sky Blue") .. " ornament!",30)
+      elseif player.self.Character:FindFirstChild("Back3") and var.machine.delete.epic == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Epic","Purple") .. " ornament!",30)
+      elseif player.self.Character:FindFirstChild("Back4") and var.machine.delete.legendary == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Legendary","Yellow") .. " ornament!",30)
+      elseif player.self.Character:FindFirstChild("Back5") and var.machine.delete.mythic == true then
+        var.machine.toggle = false
+        lib:notify("Congratulation! You got a " .. lib:ColorFonts("Mythical","Red") .. " ornament!",30)
+      end
+    end
     end
 end)
-]]
+
 T6:Dropdown("Select Room",var.raid.table,function(value)
     var.raid.s = value
 end)
