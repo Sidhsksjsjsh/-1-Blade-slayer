@@ -62,9 +62,16 @@ local var = {
   fraid = false,
   cgroup = false,
   machine = {
-    table = {"Mask","Breath","Ornament"},
+    table = {"Mask","Breath","Ornament","Breath Amplification"},
     s = "Mask",
     toggle = false
+    delete = {
+      common = false,
+      rare = false,
+      epic = false,
+      legendary = false,
+      mythic = false
+    }
   }
 }
 
@@ -135,12 +142,20 @@ T7:Toggle("Auto draw machine",false,function(value)
         game:GetService("ReplicatedStorage")["Remotes"]["RerollOrnament"]:InvokeServer(400002)
       elseif var.machine.s == "Ornament" then
         game:GetService("ReplicatedStorage")["Remotes"]["RerollOrnament"]:InvokeServer(400003)
+      elseif var.machine.s == "Breath Amplification" then
+        game:GetService("ReplicatedStorage")["Remotes"]["RerollOrnament"]:InvokeServer(400004)
       else
         lib:notify(lib:ColorFonts("INVALID MACHINE NAME","Red"),10)
       end
     end
 end)
 
+--[[lib:runtime(function()
+    if var.machine.s == "Mask" then
+        k
+    end
+end)
+]]
 T6:Dropdown("Select Room",var.raid.table,function(value)
     var.raid.s = value
 end)
