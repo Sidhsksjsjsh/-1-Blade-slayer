@@ -9,6 +9,7 @@ local T6 = wndw:Tab("Raid",true)
 local T7 = wndw:Tab("Machine",true)
 
 local workspace = game:GetService("Workspace")
+local cg = game:GetService("CoreGui")
 local player = {
   self = game:GetService("Players").LocalPlayer,
   all = game:GetService("Players")
@@ -781,26 +782,28 @@ T100:Dropdown("Target detection",{"Workspace","ReplicatedStorage","Players"},fun
       var.remote.target = value
 end)
 
-T100:Dropdown("Remote type",{"BindableEvent","BindableFunction","RemoteEvent","RemoteFunction","LocalScript"},function(value)
+T100:Dropdown("Remote type",{"BindableEvent","BindableFunction","RemoteEvent","RemoteFunction","LocalScript","ModuleScript"},function(value)
       var.remote.class = value
 end)
 
 T100:Button("Start detect",function()
-      var.remote.list = "Looking for the remote you're aiming for"
+      lab:EditLabel("Loading... 'require()'")
       wait(1)
-      var.remote.list = ""
+      var.remote.list = "")
       for i,v in pairs(game:GetService(var.remote.target):GetDescendants()) do
         if v:IsA(var.remote.class) then
           if var.remote.class == "BindableEvent" then
-            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Name,"Red") .. ":" .. lib:ColorFonts("Fire()","Yellow")
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Parent.Name .. "." .. v.Name,"Red") .. ":" .. lib:ColorFonts("Fire()","Yellow")
           elseif var.remote.class == "BindableFunction" then
-            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Name,"Red") .. ":" .. lib:ColorFonts("Invoke()","Blue")
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Parent.Name .. "." .. v.Name,"Red") .. ":" .. lib:ColorFonts("Invoke()","Blue")
           elseif var.remote.class == "RemoteEvent" then
-            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Name,"Red") .. ":" .. lib:ColorFonts("FireServer()","Yellow")
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Parent.Name .. "." .. v.Name,"Red") .. ":" .. lib:ColorFonts("FireServer()","Yellow")
           elseif var.remote.class == "RemoteFunction" then
-            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Name,"Red") .. ":" .. lib:ColorFonts("InvokeServer()","Blue")
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Parent.Name .. "." .. v.Name,"Red") .. ":" .. lib:ColorFonts("InvokeServer()","Blue")
           elseif var.remote.list == "LocalScript" then
-            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Parent.Name .. "." .. v.Name,"Red")
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Parent.Name .. "." .. v.Name,"Red") .. " -> " .. lib:ColorFonts("LocalScript","Green")
+          elseif var.remote.list == "ModuleScript" then
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Parent.Name .. "." .. v.Name,"Red") .. " -> " .. lib:ColorFonts("ModuleScript","Green")
           end
         end
       end
