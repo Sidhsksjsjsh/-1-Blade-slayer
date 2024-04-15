@@ -72,6 +72,11 @@ local var = {
       legendary = false,
       mythic = false
     }
+  },
+  remote = {
+    list = "",
+    target = "Workspace",
+    class = "BindableEvent"
   }
 }
 
@@ -767,6 +772,39 @@ end)
 
 T99:Button("Rejoin",function()
       lib:rejoin()
+end)
+
+local T100 = wndw:Tab("Remote Finder")
+local lab = T100:Label(var.remote.list)
+  
+T100:Dropdown("Target detection",{"Workspace","ReplicatedStorage","Players"},function(value)
+      var.remote.target = value
+end)
+
+T100:Dropdown("Remote type",{"BindableEvent","BindableFunction","RemoteEvent","RemoteFunction","LocalScript"},function(value)
+      var.remote.class = value
+end)
+
+T100:Button("Start detect",function()
+      var.remote.list = "Looking for the remote you're aiming for"
+      wait(1)
+      var.remote.list = ""
+      for i,v in pairs(game:GetService(var.remote.target):GetDescendants()) do
+        if v:IsA(var.remote.class) then
+          if var.remote.class == "BindableEvent" then
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Name,"Red") .. ":" .. lib:ColorFonts("Fire()","Yellow")
+          elseif var.remote.class == "BindableFunction" then
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Name,"Red") .. ":" .. lib:ColorFonts("Invoke()","Blue")
+          elseif var.remote.class == "RemoteEvent" then
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Name,"Red") .. ":" .. lib:ColorFonts("FireServer()","Yellow")
+          elseif var.remote.class == "RemoteFunction" then
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Name,"Red") .. ":" .. lib:ColorFonts("InvokeServer()","Blue")
+          elseif var.remote.list == "LocalScript" then
+            var.remote.list = var.remote.list .. "\n" .. lib:ColorFonts(v.Parent.Name .. "." .. v.Name,"Red")
+          end
+        end
+      end
+      lab:EditLabel(var.remote.list)
 end)
 end
 
