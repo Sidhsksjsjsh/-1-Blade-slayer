@@ -78,7 +78,8 @@ local var = {
     list = "",
     target = "Workspace",
     class = "BindableEvent"
-  }
+  },
+  alre = false
 }
 
 --[[
@@ -570,7 +571,12 @@ T99:Button("Remote spy",function()
 end)
 
 T99:Button("Dex [ PUBLIC ]",function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+      if var.alre == false then
+        var.alre = true
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+      else
+        lib:notify(lib:ColorFonts("Alr executed","Red"),10)
+      end
 end)
   
 T99:Button("Turtle Instance Viewer [ PUBLIC ]",function()
