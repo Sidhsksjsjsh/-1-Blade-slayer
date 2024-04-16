@@ -781,7 +781,7 @@ T99:Button("Rejoin",function()
       lib:rejoin()
 end)
 
-local T100 = wndw:Tab("Remote Finder")
+local T100 = wndw:Tab("Remote Finder",true)
 local lab = T100:Label(var.remote.list)
   
 T100:Dropdown("Target detection",{"Workspace","ReplicatedStorage","Players"},function(value)
@@ -795,7 +795,7 @@ end)
 T100:Button("Start detect",function()
       lab:EditLabel("Loading... 'require()'")
       wait(1)
-      var.remote.list = "")
+      var.remote.list = ""
       for i,v in pairs(game:GetService(var.remote.target):GetDescendants()) do
         if v:IsA(var.remote.class) then
           if var.remote.class == "BindableEvent" then
@@ -815,6 +815,7 @@ T100:Button("Start detect",function()
       end
       lab:EditLabel(var.remote.list)
 end)
+
 end
 
 --[[T3:Toggle("Receive task - TESTING",false,function(value)
